@@ -10,9 +10,14 @@ const Survey = () => {
   const navigate = useNavigate();
   const [selected, setSelected] = useState<UserType | null>(null);
 
+  const handleSelection = (type: UserType) => {
+    setSelected(type);
+  };
+
   const handleSubmit = () => {
     if (selected) {
       localStorage.setItem("userType", selected);
+      sessionStorage.setItem("hasSeenWelcome", "true");
       navigate("/search");
     }
   };
@@ -42,10 +47,12 @@ const Survey = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 dynamic-background">
       <div className="max-w-5xl w-full space-y-8">
         <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold">Who are you?</h1>
+          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Welcome to NASA Research Portal
+          </h1>
           <p className="text-xl text-muted-foreground">
             Help us customize your experience
           </p>
@@ -60,7 +67,7 @@ const Survey = () => {
                   ? "border-primary cosmic-glow"
                   : "border-border hover:border-primary/50"
               }`}
-              onClick={() => setSelected(type)}
+              onClick={() => handleSelection(type)}
             >
               <div className="p-6 space-y-4 h-full flex flex-col items-center text-center">
                 <div

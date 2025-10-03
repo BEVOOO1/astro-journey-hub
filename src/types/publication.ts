@@ -2,13 +2,20 @@ export interface Publication {
   title: string;
   url: string;
   authors: string;
-  date: string;
   journal: string;
-  doi: string;
-  keywords: string;
+  date: string;
   abstract: string;
-  content: string;
-  sections: string;
+  main_content: string;
+  full_content: string;
+  content_length: string;
+  topics: string;
+  keywords: string;
+  entities: string;
+  timeline_date: string;
+  timeline_year: string;
+  timeline_components: string;
+  domain: string;
+  source: string;
   scraped_date: string;
   status: string;
 }

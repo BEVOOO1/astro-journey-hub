@@ -8,17 +8,20 @@ const Welcome = () => {
 
   useEffect(() => {
     const userType = localStorage.getItem("userType");
-    if (userType) {
+    const hasSeenWelcome = sessionStorage.getItem("hasSeenWelcome");
+    
+    if (userType && hasSeenWelcome === "true") {
       navigate("/search");
     }
   }, [navigate]);
 
   const handleGetStarted = () => {
+    sessionStorage.setItem("hasSeenWelcome", "true");
     navigate("/survey");
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden dynamic-background">
       {/* Animated background stars */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(50)].map((_, i) => (
@@ -42,7 +45,7 @@ const Welcome = () => {
 
         <div className="space-y-4">
           <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-            NASA Space Research
+            NASA Research Portal
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
             Explore groundbreaking space biology research from NASA's most ambitious missions
