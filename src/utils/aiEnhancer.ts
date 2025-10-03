@@ -13,6 +13,8 @@ export const enhanceContentForUser = async (
       scientist: `Enhance this scientific content for a researcher. Maintain technical accuracy, expand on key findings, and include relevant scientific details. Keep professional tone, around 300 words:\n\n${content}`,
     };
 
+    console.log("[aiEnhancer] Sending prompt:", prompts[userType]);
+
     const response = await fetch(AI_API_URL, {
       method: "POST",
       headers: {
@@ -32,12 +34,12 @@ export const enhanceContentForUser = async (
     }
 
     const data = await response.json();
-    
-    // Handle different possible response formats from Llama API
+    console.log("[aiEnhancer] Response:", data);
+
     return data.response || data.choices?.[0]?.text || data.content || data.message || content;
   } catch (error) {
     console.error("Error enhancing content:", error);
-    return content; // Return original content if AI fails
+    return content;
   }
 };
 
@@ -51,6 +53,8 @@ export const generateSummary = async (
       explorer: `Create a clear, informative summary (3-4 sentences) of this space research:\n\n${content}`,
       scientist: `Create a comprehensive summary highlighting key findings and methodology (4-5 sentences):\n\n${content}`,
     };
+
+    console.log("[aiEnhancer] Sending summary prompt:", prompts[userType]);
 
     const response = await fetch(AI_API_URL, {
       method: "POST",
@@ -71,18 +75,11 @@ export const generateSummary = async (
     }
 
     const data = await response.json();
-    
-    // Handle different possible response formats from Llama API
-    const summary = data.response || data.choices?.[0]?.text || data.content || data.message;
-    
-    if (summary) {
-      return summary;
-    } else {
-      // Fallback to simple truncation
-      return content.length > 200 ? content.substring(0, 200) + "..." : content;
-    }
+    console.log("[aiEnhancer] Summary response:", data);
+
+    return data.response || data.choices?.[0]?.text || data.content || data.message || content;
   } catch (error) {
     console.error("Error generating summary:", error);
-    return content.length > 200 ? content.substring(0, 200) + "..." : content;
+    return content;
   }
 };
