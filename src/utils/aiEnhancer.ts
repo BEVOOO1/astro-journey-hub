@@ -19,17 +19,22 @@ export const enhanceContentForUser = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        model: "llama3.2-vision:11b",
         prompt: prompts[userType],
+        stream: false,
         max_tokens: 500,
+        temperature: 0.7,
       }),
     });
 
     if (!response.ok) {
-      throw new Error("Failed to enhance content");
+      throw new Error(`Failed to enhance content: ${response.statusText}`);
     }
 
     const data = await response.json();
-    return data.response || content;
+    
+    // Handle different possible response formats from Llama API
+    return data.response || data.choices?.[0]?.text || data.content || data.message || content;
   } catch (error) {
     console.error("Error enhancing content:", error);
     return content; // Return original content if AI fails
@@ -53,19 +58,31 @@ export const generateSummary = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        model: "llama3.2-vision:11b",
         prompt: prompts[userType],
+        stream: false,
         max_tokens: 200,
+        temperature: 0.7,
       }),
     });
 
     if (!response.ok) {
-      throw new Error("Failed to generate summary");
+      throw new Error(`Failed to generate summary: ${response.statusText}`);
     }
 
     const data = await response.json();
-    return data.response || content.substring(0, 200) + "...";
+    
+    // Handle different possible response formats from Llama API
+    const summary = data.response || data.choices?.[0]?.text || data.content || data.message;
+    
+    if (summary) {
+      return summary;
+    } else {
+      // Fallback to simple truncation
+      return content.length > 200 ? content.substring(0, 200) + "..." : content;
+    }
   } catch (error) {
     console.error("Error generating summary:", error);
-    return content.substring(0, 200) + "...";
+    return content.length > 200 ? content.substring(0, 200) + "..." : content;
   }
 };
